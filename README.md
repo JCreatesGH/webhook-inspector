@@ -1,6 +1,6 @@
 # Webhook Inspector
 
-[![CI](https://github.com/josh/webhook-inspector/actions/workflows/ci.yml/badge.svg)](https://github.com/josh/webhook-inspector/actions)
+[![CI](https://github.com/JCreatesGH/webhook-inspector/actions/workflows/ci.yml/badge.svg)](https://github.com/JCreatesGH/webhook-inspector/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
