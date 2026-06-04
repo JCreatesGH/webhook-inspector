@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Webhook Inspector</title>
+<style>
+  :root{--bg:#0f1117;--card:#161b22;--accent:#10b981;--fg:#e6edf3;--muted:#9aa4b2;--border:#30363d}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:36px 20px}
+  h1{margin:0 0 4px} .sub{color:var(--muted);margin-bottom:20px}
+  .url{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .url code{color:var(--accent);font-size:1rem;flex:1;overflow:auto}
+  button{background:var(--accent);border:0;color:#04130d;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer}
+  .req{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-top:12px;overflow:hidden}
+  .req h4{margin:0;padding:12px 14px;display:flex;gap:10px;align-items:center;cursor:pointer}
+  .m{font-family:monospace;font-weight:700;padding:2px 8px;border-radius:6px;font-size:.8rem}
+  .GET{background:#1f6feb33;color:#58a6ff}.POST{background:#23863633;color:#3fb950}.PUT{background:#9e6a0333;color:#d29922}.DELETE{background:#da363333;color:#f85149}.PATCH{background:#8957e533;color:#bc8cff}
+  .body{border-top:1px solid var(--border);padding:12px 14px;font-family:monospace;font-size:.85rem;white-space:pre-wrap;color:#c9d1d9;display:none}
+  .req.open .body{display:block} .muted{color:var(--muted);font-size:.85rem}
+  .empty{color:var(--muted);text-align:center;padding:40px}
+</style></head>
+<body><div class="wrap">
+  <h1>Webhook Inspector</h1>
+  <div class="sub">Create a bin, send any HTTP request to it, and watch it appear live.</div>
+  <div class="url"><span class="muted">POST/GET →</span><code id="binUrl">creating…</code>
+    <button onclick="copyUrl()">Copy</button><button onclick="clearReqs()">Clear</button></div>
+  <div id="list"><div class="empty">Waiting for requests…</div></div>
+  <script>
+    let binId=null, since=0;
+    async function init(){
+      binId=(await fetch('/api/bins',{method:'POST'}).then(r=>r.json())).bin_id;
+      document.getElementById('binUrl').textContent=location.origin+'/b/'+binId;
+      poll(); setInterval(poll, 1500);
+    }
+    function copyUrl(){navigator.clipboard?.writeText(location.origin+'/b/'+binId);}
+    async function clearReqs(){await fetch('/api/bins/'+binId+'/requests',{method:'DELETE'});since=0;document.getElementById('list').innerHTML='<div class="empty">Cleared. Waiting…</div>';}
+    async function poll(){
+      const rs=await fetch('/api/bins/'+binId+'/requests?since='+since).then(r=>r.json());
+      if(!rs.length) return;
+      const list=document.getElementById('list');
+      if(since===0) list.innerHTML='';
+      for(const r of rs){
+        since=Math.max(since,r.id);
+        const div=document.createElement('div'); div.className='req';
+        const hdr=Object.entries(r.headers).map(([k,v])=>k+': '+v).join('\n');
+        div.innerHTML=`<h4 onclick="this.parentElement.classList.toggle('open')">
+          <span class="m ${r.method}">${r.method}</span><span>${r.path}</span>
+          <span class="muted" style="margin-left:auto">${new Date(r.ts).toLocaleTimeString()}</span></h4>
+          <div class="body"><b>Query:</b> ${JSON.stringify(r.query)}\n\n<b>Headers:</b>\n${hdr}\n\n<b>Body:</b>\n${r.body||'(empty)'}</div>`;
+        list.prepend(div);
+      }
+    }
+    init();
+  </script>
+</div></body></html>

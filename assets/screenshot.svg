@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="470" viewBox="0 0 820 470" font-family="system-ui,Segoe UI,Helvetica,sans-serif">
+  <rect width="820" height="470" fill="#0f1117"/>
+  <g transform="translate(40,28)">
+    <text x="0" y="24" font-size="22" font-weight="800" fill="#e6edf3">Webhook Inspector</text>
+    <text x="0" y="46" font-size="13" fill="#9aa4b2">Create a bin, send any HTTP request to it, and watch it appear live.</text>
+    <rect x="0" y="58" width="740" height="46" rx="10" fill="#161b22" stroke="#30363d"/>
+    <text x="14" y="86" font-size="12" fill="#9aa4b2">POST/GET →</text>
+    <text x="92" y="86" font-size="14" fill="#10b981" font-family="monospace">https://hook.dev/b/9f3ac2b1</text>
+    <rect x="600" y="68" width="62" height="26" rx="7" fill="#10b981"/><text x="631" y="86" font-size="12" fill="#04130d" text-anchor="middle" font-weight="700">Copy</text>
+    <rect x="668" y="68" width="62" height="26" rx="7" fill="#21262d"/><text x="699" y="86" font-size="12" fill="#9aa4b2" text-anchor="middle">Clear</text>
+    <!-- request 1 expanded -->
+    <rect x="0" y="118" width="740" height="150" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="14" y="132" width="52" height="22" rx="6" fill="#23863633"/><text x="40" y="148" font-size="12" fill="#3fb950" text-anchor="middle" font-family="monospace" font-weight="700">POST</text>
+    <text x="78" y="148" font-size="13" fill="#e6edf3">/webhook</text>
+    <text x="726" y="148" font-size="12" fill="#9aa4b2" text-anchor="end">10:42:07</text>
+    <line x1="14" y1="166" x2="726" y2="166" stroke="#30363d"/>
+    <text font-size="12" font-family="SFMono-Regular,monospace" xml:space="preserve">
+      <tspan x="14" y="188" fill="#9aa4b2">Query: </tspan><tspan fill="#c9d1d9">{"source":"stripe"}</tspan>
+      <tspan x="14" y="210" fill="#9aa4b2">Headers:</tspan>
+      <tspan x="14" y="228" fill="#c9d1d9">  content-type: application/json   x-signature: t=171,v1=abc…</tspan>
+      <tspan x="14" y="250" fill="#9aa4b2">Body: </tspan><tspan fill="#c9d1d9">{"event":"charge.succeeded","amount":4200}</tspan>
+    </text>
+    <!-- request 2 collapsed -->
+    <rect x="0" y="282" width="740" height="44" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="14" y="295" width="46" height="20" rx="6" fill="#1f6feb33"/><text x="37" y="310" font-size="11" fill="#58a6ff" text-anchor="middle" font-family="monospace" font-weight="700">GET</text>
+    <text x="72" y="310" font-size="13" fill="#e6edf3">/health</text><text x="726" y="310" font-size="12" fill="#9aa4b2" text-anchor="end">10:41:55</text>
+    <!-- request 3 collapsed -->
+    <rect x="0" y="334" width="740" height="44" rx="10" fill="#161b22" stroke="#30363d"/>
+    <rect x="14" y="347" width="46" height="20" rx="6" fill="#da363333"/><text x="37" y="362" font-size="11" fill="#f85149" text-anchor="middle" font-family="monospace" font-weight="700">DEL</text>
+    <text x="72" y="362" font-size="13" fill="#e6edf3">/items/42</text><text x="726" y="362" font-size="12" fill="#9aa4b2" text-anchor="end">10:41:30</text>
+  </g>
+  <text x="40" y="452" font-size="12" fill="#3fb950" font-family="SFMono-Regular,monospace">FastAPI · live polling (?since=) · ring buffer · ✓ 9 tests (capture, methods, query, headers, body)</text>
+</svg>
