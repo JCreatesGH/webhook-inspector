@@ -54,3 +54,37 @@ def test_clear_and_unknown(client):
     assert client.get(f"/api/bins/{b}/requests").json() == []
     assert client.get("/api/bins/doesnotexist/requests").status_code == 404
     assert client.post("/b/doesnotexist/x").status_code == 404
+
+
+def test_configured_response_is_returned(client):
+    b = client.post("/api/bins").json()["bin_id"]
+    client.put(f"/api/bins/{b}/response",
+               json={"status": 503, "body": "down for maintenance", "content_type": "text/plain"})
+    r = client.post(f"/b/{b}/hook", follow_redirects=False)
+    assert r.status_code == 503 and r.text == "down for maintenance"
+    assert r.headers["content-type"].startswith("text/plain")
+    # the request is still captured even though a custom response was returned
+    assert len(client.get(f"/api/bins/{b}/requests").json()) == 1
+    # reset -> back to the default acknowledgement
+    client.delete(f"/api/bins/{b}/response")
+    assert client.post(f"/b/{b}/hook").json()["received"] is True
+
+
+def test_get_response_defaults(client):
+    b = client.post("/api/bins").json()["bin_id"]
+    cfg = client.get(f"/api/bins/{b}/response").json()
+    assert cfg["custom"] is False and cfg["status"] == 200
+
+
+def test_response_status_is_validated(client):
+    b = client.post("/api/bins").json()["bin_id"]
+    assert client.put(f"/api/bins/{b}/response", json={"status": 999}).status_code == 422
+
+
+def test_large_body_is_truncated():
+    from app.store import BinStore
+    c = TestClient(create_app(BinStore(max_body=8)))
+    b = c.post("/api/bins").json()["bin_id"]
+    c.post(f"/b/{b}/x", content="0123456789ABCDEF")
+    req = c.get(f"/api/bins/{b}/requests").json()[0]
+    assert req["truncated"] is True and len(req["body"]) == 8
